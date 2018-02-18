@@ -71,8 +71,12 @@ publishing {
                 getDependencies(configurations.compile, dependenciesNode)
                 getDependencies(configurations.api, dependenciesNode)
                 getDependencies(configurations.implementation, dependenciesNode)
-                getDependencies(configurations.releaseImplementation, dependenciesNode)
-                getDependencies(configurations.debugImplementation, dependenciesNode)
+                if (project.hasProperty("android")) {
+                    getDependencies(configurations.releaseImplementation, dependenciesNode)
+                    getDependencies(configurations.debugImplementation, dependenciesNode)
+                    getDependencies(configurations.androidTestAnnotationProcessor, dependenciesNode)
+                    getDependencies(configurations.annotationProcessor, dependenciesNode)
+                }
                 def root = asNode()
                 root.appendNode('description', project.getProperty("libraryDescription"))
                 root.appendNode('name', project.getProperty("libraryName"))
