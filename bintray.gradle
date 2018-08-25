@@ -15,16 +15,16 @@ bintray {
     publications = ['MyPublication']
     configurations = ['archives']
     pkg {
-        repo = project.getProperty("bintrayRepo")
-        name = project.getProperty("bintrayName")
-        desc = project.getProperty("libraryDescription")
-        websiteUrl = project.getProperty("siteUrl")
-        vcsUrl = project.getProperty("gitUrl")
-        licenses = project.getProperty("allLicenses")
+        repo = bintrayRepo
+        name = bintrayName
+        desc = libraryDescription
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = allLicenses
         publish = true
         publicDownloadNumbers = true
         version {
-            desc = project.getProperty("libraryDescription")
+            desc = libraryDescription
             gpg {
                 sign = true //Determines whether to GPG sign the files. The default is false
                 passphrase = properties.getProperty("bintray.gpg.password")
