@@ -23,7 +23,7 @@ if (project.hasProperty("android")) {
     }
 }
 
-// Generate javadoc
+// Generate javador
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
@@ -58,23 +58,13 @@ artifacts {
 
 // Create the publication with the pom configuration:
 publishing {
-    repositories {
-        maven {
-            credentials {
-                username nexusUsername
-                password nexusPassword
-            }
-            url nexusUrl
-        }
-    }
-
     publications {
-        AppRelease(MavenPublication) {
+        MyPublication(MavenPublication) {
             artifact sourcesJar
             artifact javadocJar
             artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
-            groupId project.getProperty("groupId")
-            artifactId project.getProperty("artifactId")
+            groupId publishedGroupId
+            artifactId artifact
             version libraryVersion
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -87,11 +77,10 @@ publishing {
                     getDependencies(configurations.androidTestAnnotationProcessor, dependenciesNode)
                     getDependencies(configurations.annotationProcessor, dependenciesNode)
                 }
-                println "Total Dependencies: " + dependenciesNode.children().size()
                 def root = asNode()
-                root.appendNode('description', project.getProperty("libraryDescription"))
-                root.appendNode('name', project.getProperty("libraryName"))
-                root.appendNode('url', project.getProperty("siteUrl"))
+                root.appendNode('description', libraryDescription)
+                root.appendNode('name', libraryName)
+                root.appendNode('url', siteUrl)
                 root.children().last() + pomConfig
             }
         }
@@ -101,41 +90,27 @@ publishing {
 def getDependencies(config, dependenciesNode) {
     config.allDependencies.each {
         if (it.group != null && it.name != null) {
-            if (!hasExistingNode(dependenciesNode, it)) {
-                def dependencyNode = dependenciesNode.appendNode('dependency')
-                dependencyNode.appendNode('groupId', it.group)
-                dependencyNode.appendNode('artifactId', it.name)
-                dependencyNode.appendNode('version', it.version)
-                printAdd(config, it)
-                if (it.excludeRules.size() > 0) {
-                    def exclusionsNode = dependencyNode.appendNode('exclusions')
-                    printAddExclusions(config, it)
-                    it.excludeRules.each { rule ->
-                        def exclusionNode = exclusionsNode.appendNode('exclusion')
-                        exclusionNode.appendNode('groupId', rule.group)
-                        if (rule.module != null) {
-                            exclusionNode.appendNode('artifactId', rule.module)
-                        }
+            def dependencyNode = dependenciesNode.appendNode('dependency')
+            dependencyNode.appendNode('groupId', it.group)
+            dependencyNode.appendNode('artifactId', it.name)
+            dependencyNode.appendNode('version', it.version)
+            printAdd(config, it)
+            def exclusionsNode = dependencyNode.appendNode('exclusions')
+            if (it.excludeRules.size() > 0) {
+                printAddExclusions(config, it)
+                it.excludeRules.each { rule ->
+                    def exclusionNode = exclusionsNode.appendNode('exclusion')
+                    exclusionNode.appendNode('groupId', rule.group)
+                    if (rule.module != null) {
+                        exclusionNode.appendNode('artifactId', rule.module)
                     }
                 }
+            } else {
+                dependencyNode.remove(exclusionsNode)
             }
         }
+        println "Dependencies size: " + dependenciesNode.children().size()
     }
-}
-
-boolean hasExistingNode(dependenciesNode, it) {
-    for (def item : dependenciesNode.children()) {
-        def itemGroupId = item.groupId[0].value()
-        def itemArtifactId = item.artifactId[0].value()
-        def itemVersion = item.version[0].value()
-        if (it.group == itemGroupId
-                && it.name == itemArtifactId
-                && it.version == itemVersion) {
-            return true
-        }
-    }
-
-    return false
 }
 
 def printAdd(config, it) {
