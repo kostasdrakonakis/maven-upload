@@ -1,7 +1,7 @@
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-version = project.getProperty("libraryVersion")
+version = libraryVersion
 
 
 if (project.hasProperty("android")) {
@@ -33,20 +33,20 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 def pomConfig = {
     licenses {
         license {
-            name project.getProperty("licenseName")
-            url project.getProperty("licenseUrl")
+            name licenseName
+            url licenseUrl
             distribution "repo"
         }
     }
     developers {
         developer {
-            id project.getProperty("developerId")
-            name project.getProperty("developerName")
-            email project.getProperty("developerEmail")
+            id developerId
+            name developerName
+            email developerEmail
         }
     }
     scm {
-        url project.getProperty("gitUrl")
+        url gitUrl
     }
 }
 
@@ -75,7 +75,7 @@ publishing {
             artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
             groupId project.getProperty("groupId")
             artifactId project.getProperty("artifactId")
-            version project.getProperty("libraryVersion")
+            version libraryVersion
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
                 getDependencies(configurations.compile, dependenciesNode)
