@@ -106,8 +106,6 @@ def getDependencies(config, dependenciesNode) {
                             exclusionNode.appendNode('artifactId', rule.module)
                         }
                     }
-                } else {
-                    dependencyNode.remove(exclusionsNode)
                 }
             }
         }
