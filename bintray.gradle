@@ -4,7 +4,7 @@ if (project.hasProperty("android")) {
     apply plugin: 'com.github.dcendents.android-maven'
 }
 
-group = project.getProperty("publishedGroupId")
+group = publishedGroupId
 // Bintray
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
