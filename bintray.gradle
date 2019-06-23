@@ -14,7 +14,7 @@ if (project.rootProject.file('local.properties').exists()) {
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
     bintrayUser = properties.getProperty("bintray.user")
     bintrayApiKey = properties.getProperty("bintray.apikey")
-    bintrayPassword = properties.getProperty("bintray.password")
+    bintrayPassword = properties.getProperty("bintray.gpg.password")
 } else {
     bintrayUser = defaultBintrayUser
     bintrayApiKey = defaultBintrayApiKey
