@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 
 version = libraryVersion
 
-apply from: 'https://raw.githubusercontent.com/kostasdrakonakis/maven-upload/master/bintray.gradle'
+apply from: 'https://raw.githubusercontent.com/kostasdrakonakis/maven-upload/master/pomconfig.gradle'
 
 // Create the publication with the pom configuration:
 publishing {
