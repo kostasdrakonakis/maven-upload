@@ -73,7 +73,7 @@ publishing {
                 NodeList packagingNodeList = root.get('packaging')
                 if (!packagingNodeList.isEmpty()) {
                     def packagingNode = packagingNodeList.get(0)
-                    packagingNode.setValue(packagingType)
+                    packagingNode.setValue('aar')
                 } else {
                     root.appendNode('packaging', 'aar')
                 }
