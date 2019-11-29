@@ -1,5 +1,5 @@
 apply plugin: 'maven'
-apply plugin: 'java'
+apply plugin: 'digital.wup.android-maven-publish'
 apply plugin: 'maven-publish'
 
 version = libraryVersion
@@ -67,7 +67,7 @@ publishing {
             groupId publishedGroupId
             artifactId artifact
             version libraryVersion
-            from components.java
+            from components.android
             pom.withXml {
                 def root = asNode()
                 Node packagingNode = root.get('packaging').get(0)
