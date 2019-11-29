@@ -4,7 +4,57 @@ apply plugin: 'maven-publish'
 
 version = libraryVersion
 
-apply from: 'https://raw.githubusercontent.com/kostasdrakonakis/maven-upload/master/pomconfig.gradle'
+if (project.hasProperty("android")) {
+    // Android libraries
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+    }
+
+    task javadoc(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    }
+} else {
+    // Java libraries
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+}
+
+// Generate javador
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+// Create the pom configuration with maven-publish plugin.
+def pomConfig = {
+    licenses {
+        license {
+            name licenseName
+            url licenseUrl
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id developerId
+            name developerName
+            email developerEmail
+        }
+    }
+    scm {
+        url gitUrl
+    }
+}
+
+// Get the artifacts
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
 
 // Create the publication with the pom configuration:
 publishing {
