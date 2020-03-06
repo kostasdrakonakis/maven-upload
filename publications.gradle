@@ -12,7 +12,6 @@ publishing {
         MyPublication(MavenPublication) {
             artifact sourcesJar
             artifact javadocJar
-            artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
             groupId publishedGroupId
             artifactId artifact
             version libraryVersion
